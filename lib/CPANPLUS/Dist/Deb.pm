@@ -23,7 +23,6 @@ use Locale::Maketext::Simple    Class => 'CPANPLUS', Style => 'gettext';
 
 local $Params::Check::VERBOSE = 1;
 
-
 =pod
 
 =head1 NAME
@@ -68,8 +67,8 @@ CPANPLUS::Dist::Deb
 
     
     ### using the commandline tool
-    cpan2dist --format CPANPLUS::Dist::Deb Some::Module
-    
+    cpan2dist --format CPANPLUS::Dist::Deb Some::Module    
+
 =head1 DESCRIPTION
 
 C<CPANPLUS::Dist::Deb> is a distribution class to create C<debian>
@@ -287,7 +286,8 @@ sub prepare {
 
     my $args;
     my( $verbose,$force,$perl,$prereq_target,$distdir,$copyright,$prefix,
-        $keep_source,$distribution, $deb_version,$prereq_build);
+        $keep_source,$distribution, $deb_version,$prereq_build,
+        $manual_depends);
     {   local $Params::Check::ALLOW_UNKNOWN = 1;
         my $tmpl = {
             verbose     => { default => $conf->get_conf('verbose'),
@@ -308,6 +308,7 @@ sub prepare {
                                   store => \$deb_version },                                  
             #keep_source     => { default => 0, store => \$keep_source },
             prereq_build    => { default => 0, store => \$prereq_build },
+            manual_depends => { default => undef, store => \$manual_depends },
         };
 
         $args = check( $tmpl, \%hash ) or return;
@@ -591,6 +592,14 @@ sub prepare {
 
         ### always add prereqs to depends ###
         my $depends         = join ', ', $perl_depends, $prereqs;
+
+        ### add any manual dependancy to depends
+        unless (defined $manual_depends) {
+          my $manual_depends_hash = $conf->get_deb("manual_dependencies") || {};
+          $manual_depends = $manual_depends_hash->{ $pkg };
+          $manual_depends = "" unless defined $manual_depends;
+        }
+        $depends .= ", $manual_depends" if length $manual_depends;
 
         ### empty by default, only used if this module has xs parts ###
         my $build_indep; my $bdi_line = '';

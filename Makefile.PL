@@ -27,6 +27,7 @@ WriteMakefile (
     NAME            => 'CPANPLUS::Dist::Deb',
     VERSION_FROM    => 'lib/CPANPLUS/Dist/Deb.pm', # finds $VERSION
     dist            => { COMPRESS => 'gzip -9f', SUFFIX => 'gz' },
+    EXE_FILES       => [ "scripts/cpanp-deb-dependency", "scripts/cpanp-deb-make-apt" ],
     PREREQ_PM       => { 
                         'Test::More'                => 0, 
                         'CPANPLUS'                  => '0.81', # dev version

@@ -1,0 +1,28 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+unless (@ARGV) {
+  print "usage: $0 <packagename> or $0 <packagename> <newvalue>\n";
+  exit;
+}
+
+use CPANPLUS::Configure;
+my $conf = CPANPLUS::Configure->new();
+
+my $package_name = shift;
+
+my $thingy = $conf->get_deb( "manual_dependencies" );
+if (@ARGV) {
+  my $extra_dependancy = shift;
+  $thingy->{ $package_name } = $extra_dependancy;
+  $conf->set_deb( manual_dependencies => $thingy );
+  $conf->save();
+}
+
+print $thingy->{ $package_name }, "\n"
+ if defined $thingy->{ $package_name } && length $thingy->{ $package_name };
+
+
+
