@@ -22,4 +22,5 @@ for my $type ( DEB_METAFILE_SOURCES, DEB_METAFILE_PACKAGES ) {
     print "Wrote '$type' to $loc\n";
 }
 
-system("rsync -avrH $deb $path") and die "$!";
+(my $myrepo = $deb) =~ s!(debian)\z!$1/!;
+system("rsync -avrH $myrepo ${path}ubuntu") and die "$!";
