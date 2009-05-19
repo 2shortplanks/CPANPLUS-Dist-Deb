@@ -23,4 +23,4 @@ for my $type ( DEB_METAFILE_SOURCES, DEB_METAFILE_PACKAGES ) {
 }
 
 (my $myrepo = $deb) =~ s!(debian)\z!$1/!;
-system("rsync -avrH $myrepo ${path}ubuntu") and die "$!";
+system("rsync -avrH $myrepo $path/ubuntu") and die "$!";
